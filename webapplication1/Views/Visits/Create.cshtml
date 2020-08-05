@@ -1,0 +1,88 @@
+﻿@model WebApplication1.Models.Visits
+
+@{
+    ViewData["Title"] = "Create";
+}
+
+<h1>Create</h1>
+
+<h4>Visits</h4>
+<hr />
+<div class="row">
+    <div class="col-md-4">
+        <form asp-action="Create" id="CreateForm" onsubmit="return validateForm()">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <div class="form-group">
+                <label asp-for="DoctorId" class="control-label"></label>
+                <!--<select asp-for="DoctorId" class ="form-control" asp-items="ViewBag.DoctorId"></select>-->
+                <input asp-for="DoctorId" type="text" value="@ViewData["DocId"]" hidden />
+                <input type="text" value="@ViewData["DocName"]" disabled class="form-control" />
+            </div>
+            <div class="form-group">
+                <label asp-for="FirstName" class="control-label"></label>
+                <input asp-for="FirstName" class="form-control" />
+                <span asp-validation-for="FirstName" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="LastName" class="control-label"></label>
+                <input asp-for="LastName" class="form-control" />
+                <span asp-validation-for="LastName" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="PhoneNumber" class="control-label"></label>
+                <input asp-for="PhoneNumber" class="form-control" />
+                <span asp-validation-for="PhoneNumber" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Date" class="control-label"></label>
+                <input id="Date" type="date" class="form-control" name="Date">
+                <span asp-validation-for="Date" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <select class="form-control" name="Time" id="Time" asp-items="(IEnumerable<SelectListItem>)@ViewData["HoursList"]">
+                </select>
+            </div>
+            <script>
+                $(document).ready(function () {
+                    $("#Date").change(function () {
+                        $.ajax({
+                            type: "POST",
+                            data: $("#CreateForm").serialize(),
+                            url: "/visits/refselectlist",
+                            success: function (data) {
+                                console.log("Działa");
+                                console.log(data);
+                                var s = ""
+                                for (var i = 0; i < data.length; i++) {
+                                    if (data[i].disabled) {
+                                        s += "<option value=" + data[i].value + " disabled class='text-danger'>" + data[i].value + "</option>";
+                                    }
+                                    else {
+                                        s += "<option value=" + data[i].value + ">" + data[i].value + "</option>";
+                                    }
+
+                                }
+                                $("#Time").html(s);
+                            },
+                            error: function (request, status, error) {
+                                console.log(error);
+                                console.log("Nie udało się połączyć");
+                            }
+                        });
+                    });
+                });
+            </script>
+            <div class="form-group">
+                <input type="submit" value="Create" class="btn btn-primary" />
+            </div>
+        </form>
+    </div>
+</div>
+
+<div>
+    <a asp-action="Index">Back to List</a>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}

@@ -1,0 +1,42 @@
+﻿@model IEnumerable<WebApplication1.Models.Doctors>
+
+@{
+    ViewData["Title"] = "Index";
+}
+
+<h1>Wybierz lekarza u którego chcesz mieć wizytę</h1>
+
+<p>
+    <a asp-action="Create">Create New</a>
+</p>
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.PersonalData)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Specialization)
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+@foreach (var item in Model) {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.PersonalData)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Specialization.SpecData)
+            </td>
+            <td>
+                <!--<a asp-action="Edit" asp-route-id="@item.Id">Edit</a> |
+    <a asp-action="Details" asp-route-id="@item.Id">Details</a> |
+    <a asp-action="Delete" asp-route-id="@item.Id">Delete</a>-->
+                <a asp-controller="Visits" asp-action="RedirectToCreate" asp-route-id="@item.Id">Dodaj wizytę</a>
+            </td>
+        </tr>
+}
+    </tbody>
+</table>
